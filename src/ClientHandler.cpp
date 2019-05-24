@@ -4,7 +4,7 @@
 
 #include "ClientHandler.h"
 
-ClientHandler::ClientHandler(const int& clientSocket, const sockaddr_un& clientSockAddr)
+ClientHandler::ClientHandler(const int& clientSocket, const sockaddr& clientSockAddr)
     : _clientSocket(clientSocket),
       _clientSockAddr(clientSockAddr) {
 }

@@ -16,11 +16,11 @@
 
 class ClientHandler {
 private:
-    sockaddr_un _clientSockAddr;
+    sockaddr _clientSockAddr;
     int _clientSocket;
 public:
     ClientHandler() = default;
-    ClientHandler(const int&, const sockaddr_un&);
+    ClientHandler(const int&, const sockaddr&);
     ~ClientHandler() = default;
 
     void handleRequest();

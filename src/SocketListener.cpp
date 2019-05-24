@@ -43,7 +43,6 @@ void SocketListener::init() {
                 perror("Error creating socket");
                 return;
             }
-
             const int one = 1;
             setsockopt(this->_serverSocket, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one));
 
@@ -77,6 +76,8 @@ void SocketListener::init() {
                 perror("Error creating socket");
                 return;
             }
+            const int one = 1;
+            setsockopt(this->_serverSocket, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one));
 
             if (bind(this->_serverSocket, (struct sockaddr*) &tcpSocket, sizeof(tcpSocket)) < 0) {
                 perror("Failed to connect socket");
@@ -122,17 +123,26 @@ void SocketListener::start() {
     }
 
     while (true) {
-        sockaddr_un clientAddr{};
+        sockaddr clientAddr{};
         memset(&clientAddr, 0, sizeof(sockaddr_un));
         unsigned int clientAddrSize = sizeof(clientAddr);
-        int clientSock = accept(this->_serverSocket, (struct sockaddr *) &clientAddr, &clientAddrSize);
+        int clientSock = accept(this->_serverSocket, &clientAddr, &clientAddrSize);
         if (clientSock < 0) {
             perror("Failed to accept client");
             continue;
         }
 
-        // accepting client connection
-        std::cout << "Accepted client connection" << std::endl;
+        switch (this->_type) {
+            case SOCKET_TYPE::TCP: {
+                std::cout << "Accepted client connection" << ((struct sockaddr_in*) &clientAddr)->sin_addr.s_addr << std::endl;
+                break;
+            }
+
+            case SOCKET_TYPE::UNIX: {
+                std::cout << "Accepted client connection" << ((struct sockaddr_un*) &clientAddr)->sun_path << std::endl;
+                break;
+            }
+        }
 
         // create client handler
         ClientHandler handler(clientSock, clientAddr);
