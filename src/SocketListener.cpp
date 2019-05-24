@@ -134,12 +134,14 @@ void SocketListener::start() {
 
         switch (this->_type) {
             case SOCKET_TYPE::TCP: {
-                std::cout << "Accepted client connection" << ((struct sockaddr_in*) &clientAddr)->sin_addr.s_addr << std::endl;
+                char clientHostname[INET_ADDRSTRLEN];
+                inet_ntop(AF_INET, &(((struct sockaddr_in*) &clientAddr)->sin_addr.s_addr), clientHostname, INET_ADDRSTRLEN);
+                std::cout << "Accepted client connection " << clientHostname << ":" << ((struct sockaddr_in*) &clientAddr)->sin_port << std::endl;
                 break;
             }
 
             case SOCKET_TYPE::UNIX: {
-                std::cout << "Accepted client connection" << ((struct sockaddr_un*) &clientAddr)->sun_path << std::endl;
+                std::cout << "Accepted client connection " << ((struct sockaddr_un*) &clientAddr)->sun_path << std::endl;
                 break;
             }
         }
