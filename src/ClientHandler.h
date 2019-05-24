@@ -5,6 +5,8 @@
 #ifndef UNIXSOCKET_CLIENTHANDLER_H
 #define UNIXSOCKET_CLIENTHANDLER_H
 
+#define MAX_BYTES 3000
+
 #include <unistd.h>
 #include <sys/socket.h>
 #include <iostream>

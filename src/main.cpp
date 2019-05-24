@@ -2,7 +2,7 @@
 
 int main() {
     SocketListener listener;
-    listener.setPath("/tmp/ldap.sock");
+    listener.setPath("/tmp/listener.sock");
     listener.start();
     return 0;
 }

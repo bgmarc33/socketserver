@@ -23,7 +23,7 @@ private:
 
 public:
     SocketListener() = default;
-    SocketListener(const std::string&);
+    explicit SocketListener(const std::string&);
     ~SocketListener();
 
     // mutators
