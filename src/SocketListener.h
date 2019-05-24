@@ -13,24 +13,37 @@
 #include <unistd.h>
 #include <vector>
 
+enum SOCKET_TYPE { UNIX, TCP };
+
 class SocketListener {
 private:
     int _serverSocket;
-    sockaddr_un _socketAddr;
+    SOCKET_TYPE _type;
+
+    // unix
     std::string _path;
+
+    // tcp
+    std::string _hostname;
+    int _port;
+
     bool _initialized;
     std::vector<std::thread> _threads;
 
 public:
     SocketListener() = default;
-    explicit SocketListener(const std::string&);
+    explicit SocketListener(const SOCKET_TYPE&);
     ~SocketListener();
 
     // mutators
     void setPath(const std::string&);
+    void setHostname(const std::string&);
+    void setPort(const int& port);
 
     // accessors
     const std::string& getPath() const;
+    const std::string& getHostname() const;
+    const int getPort() const;
 
     void init();
     void start();

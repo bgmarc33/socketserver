@@ -17,6 +17,7 @@ void ClientHandler::handleRequest() {
     // read in data from the socket
     char buff[MAX_BYTES];
     recv(this->_clientSocket, &buff, MAX_BYTES, 0);
+    std::cout << buff << std::endl;
 
     // parse the request
     std::vector<std::string> requestLines = this->parseRequest(buff);
