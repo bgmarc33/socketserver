@@ -15,16 +15,12 @@
 #include <vector>
 
 class ClientHandler {
-private:
-    sockaddr _clientSockAddr;
-    int _clientSocket;
 public:
     ClientHandler() = default;
-    ClientHandler(const int&, const sockaddr&);
     ~ClientHandler() = default;
 
-    void handleRequest();
-    std::vector<std::string> parseRequest(char*);
+    virtual void handleRequest(int)  = 0;
+    virtual std::vector<std::string> parseRequest(char*) = 0;
 };
 
 

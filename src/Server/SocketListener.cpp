@@ -78,8 +78,8 @@ void SocketListener::init() {
             }
             const int one = 1;
             setsockopt(this->_serverSocket, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one));
-
-            if (bind(this->_serverSocket, (struct sockaddr*) &tcpSocket, sizeof(tcpSocket)) < 0) {
+            int bound = bind(this->_serverSocket, (struct sockaddr*) &tcpSocket, sizeof(tcpSocket));
+            if (bound < 0) {
                 perror("Failed to connect socket");
                 return;
             }
@@ -122,12 +122,18 @@ void SocketListener::start() {
         }
     }
 
+    int socketErrors = 0;
     while (true) {
-        sockaddr clientAddr{};
+        sockaddr_un clientAddr{};
         memset(&clientAddr, 0, sizeof(sockaddr_un));
         unsigned int clientAddrSize = sizeof(clientAddr);
-        int clientSock = accept(this->_serverSocket, &clientAddr, &clientAddrSize);
+        int clientSock = accept(this->_serverSocket, (sockaddr*) &clientAddr, &clientAddrSize);
         if (clientSock < 0) {
+            socketErrors++;
+            if (socketErrors > 15) {
+                break;
+            }
+
             perror("Failed to accept client");
             continue;
         }
@@ -146,11 +152,8 @@ void SocketListener::start() {
             }
         }
 
-        // create client handler
-        ClientHandler handler(clientSock, clientAddr);
-
         // create thread
-        this->_threads.emplace_back(&ClientHandler::handleRequest, handler);
+        this->_threads.emplace_back(&ClientHandler::handleRequest, this->_clientHandler, clientSock);
     }
 }
 
@@ -174,7 +177,14 @@ const std::string& SocketListener::getHostname() const {
     return this->_hostname;
 }
 
-const int SocketListener::getPort() const {
+int SocketListener::getPort() const {
     return this->_port;
 }
 
+void SocketListener::setClientHandler(ClientHandler * clientHandler) {
+    this->_clientHandler = clientHandler;
+}
+
+const ClientHandler* SocketListener::getClientHandler() const {
+    return this->_clientHandler;
+}

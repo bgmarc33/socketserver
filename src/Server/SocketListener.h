@@ -12,6 +12,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <vector>
+#include "ClientHandler.h"
 
 enum SOCKET_TYPE { UNIX, TCP };
 
@@ -28,6 +29,7 @@ private:
     int _port;
 
     bool _initialized;
+    ClientHandler* _clientHandler;
     std::vector<std::thread> _threads;
 
 public:
@@ -39,11 +41,13 @@ public:
     void setPath(const std::string&);
     void setHostname(const std::string&);
     void setPort(const int& port);
+    void setClientHandler(ClientHandler*);
 
     // accessors
     const std::string& getPath() const;
     const std::string& getHostname() const;
-    const int getPort() const;
+    int getPort() const;
+    const ClientHandler* getClientHandler() const;
 
     void init();
     void start();
